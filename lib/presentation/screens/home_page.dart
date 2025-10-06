@@ -1,0 +1,133 @@
+import 'package:book_app/logic/all_books/all_books_bloc.dart';
+import 'package:book_app/logic/all_books/all_books_event.dart';
+import 'package:book_app/logic/random_book/random_book_bloc.dart';
+import 'package:book_app/logic/random_book/random_book_event.dart';
+import 'package:book_app/logic/top_books/top_books_bloc.dart';
+import 'package:book_app/logic/top_books/top_books_event.dart';
+import 'package:book_app/presentation/screens/fav_page.dart';
+import 'package:book_app/presentation/widgets/shared/nav_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:book_app/core/utils/colors_manager.dart';
+import 'package:book_app/presentation/widgets/book_sections/all_books.dart';
+import 'package:book_app/presentation/widgets/book_sections/random_book.dart';
+import 'package:book_app/presentation/widgets/book_sections/top_books.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  int currentIndex = 0;
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AllBooksBloc()..add(FetchAllBooksEvent()),
+        ),
+        BlocProvider(
+          create: (context) => TopBooksBloc()..add(FetchTopBooksEvent()),
+        ),
+        BlocProvider(
+          create: (context) => RandomBookBloc()..add(FetchRandomBook()),
+        ),
+      ],
+      child: Scaffold(
+        backgroundColor: ColorsManager.white,
+        appBar: AppBar(
+          backgroundColor: ColorsManager.white,
+          elevation: 0,
+          title: Text(
+            "Harry Potter Library!",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: width * 0.05,
+              color: ColorsManager.black,
+            ),
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.search_sharp,
+                size: width * 0.07,
+                color: ColorsManager.black,
+              ),
+            ),
+          ],
+        ),
+        body: currentIndex == 0
+            ? Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: width * 0.03,
+                vertical: height * 0.01,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RandomBook(),
+                    SizedBox(height: height * 0.03),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "All Books",
+                          style: TextStyle(
+                            fontSize: width * 0.05,
+                            fontWeight: FontWeight.w600,
+                            color: ColorsManager.black,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                            "See more",
+                            style: TextStyle(
+                              fontSize: width * 0.038,
+                              fontWeight: FontWeight.w400,
+                              color: ColorsManager.black.withOpacity(0.6),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: height * 0.02),
+                    BooksList(),
+                    SizedBox(height: height * 0.03),
+                    Text(
+                      "Top 3 Books",
+                      style: TextStyle(
+                        fontSize: width * 0.05,
+                        fontWeight: FontWeight.w600,
+                        color: ColorsManager.black,
+                      ),
+                    ),
+                    SizedBox(height: height * 0.02),
+                    TopBooks(),
+                  ],
+                ),
+              ),
+            )
+            : FavPage(),
+
+        extendBody: true,
+        bottomNavigationBar: SimpleNavBar(
+          currentIndex: currentIndex,
+          onTap: (i) => setState(() => currentIndex = i),
+        ),
+      ),
+    );
+  }
+}
