@@ -44,7 +44,6 @@ class _HomePageState extends State<HomePage> {
       ],
       child: Builder(
         builder: (context) {
-          // هنا استخدمنا Builder عشان يكون context داخل الـ MultiBlocProvider
           final pages = [
             Padding(
               padding: EdgeInsets.symmetric(

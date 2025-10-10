@@ -3,7 +3,6 @@ import 'package:book_app/logic/top_books/top_books_state.dart';
 import 'package:book_app/presentation/screens/details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/utils/colors_manager.dart';
 import '../shared/skeletonizer.dart';
 
@@ -19,6 +18,7 @@ class _TopBooksState extends State<TopBooks> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
+
     return SizedBox(
       height: height * 0.40,
       child: BlocBuilder<TopBooksBloc, TopBooksState>(
@@ -65,29 +65,37 @@ class _TopBooksState extends State<TopBooks> {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              book.cover,
-                              height: height * 0.28,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
+                            child: AspectRatio(
+                              aspectRatio: 0.7,
+                              child: Image.network(
+                                book.cover,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           SizedBox(height: height * 0.008),
-                          Text(
-                            book.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: width * 0.035,
+                          Flexible(
+                            child: Text(
+                              book.title,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: width * 0.035,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(height: height * 0.005),
-                          Text(
-                            book.releaseDate,
-                            style: TextStyle(
-                              fontSize: width * 0.03,
-                              color: ColorsManager.grey,
+                          Flexible(
+                            child: Text(
+                              book.releaseDate,
+                              style: TextStyle(
+                                fontSize: width * 0.03,
+                                color: ColorsManager.grey,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

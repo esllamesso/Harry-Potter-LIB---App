@@ -31,6 +31,7 @@ class _RandomBookState extends State<RandomBook> {
             final books = state.books;
             final book = books.isNotEmpty ? books[0] : null;
             if (book == null) return SizedBox.shrink();
+
             return InkWell(
               onTap: () {
                 Navigator.push(
@@ -53,11 +54,10 @@ class _RandomBookState extends State<RandomBook> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 color: Colors.black,
-
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: height * 0.01,
-                    horizontal: height * 0.008,
+                    horizontal: width * 0.01,
                   ),
                   child: Row(
                     children: [
@@ -65,21 +65,24 @@ class _RandomBookState extends State<RandomBook> {
                         width: width * 0.3,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            book.cover,
-                            height: height * 0.2,
-                            fit: BoxFit.cover,
+                          child: AspectRatio(
+                            aspectRatio: 0.7,
+                            child: Image.network(
+                              book.cover,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
+                      SizedBox(width: width * 0.04),
                       Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: width * 0.06),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Text(
                                 book.originalTitle,
                                 style: TextStyle(
                                   color: ColorsManager.grey,
@@ -89,8 +92,10 @@ class _RandomBookState extends State<RandomBook> {
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              SizedBox(height: height * 0.01),
-                              Text(
+                            ),
+                            SizedBox(height: height * 0.01),
+                            Flexible(
+                              child: Text(
                                 book.description,
                                 style: TextStyle(
                                   fontSize: width * 0.032,
@@ -99,8 +104,8 @@ class _RandomBookState extends State<RandomBook> {
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

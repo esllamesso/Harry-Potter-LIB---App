@@ -28,10 +28,8 @@ class _BooksListState extends State<BooksList> {
           } else if (state is AllBooksSuccess) {
             final books = state.books;
             return ListView.separated(
-              clipBehavior: Clip.none,
               scrollDirection: Axis.horizontal,
-              separatorBuilder: (context, index) =>
-                  SizedBox(width: width * 0.03),
+              separatorBuilder: (context, index) => SizedBox(width: width * 0.03),
               itemCount: books.length,
               itemBuilder: (context, index) {
                 final book = books[index];
@@ -51,46 +49,52 @@ class _BooksListState extends State<BooksList> {
                       ),
                     );
                   },
-                  child: Card(
-                    elevation: 0.2,
-                    color: ColorsManager.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Container(
-                      width: width * 0.45,
-                      padding: EdgeInsets.all(width * 0.02),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              book.cover,
-                              height: height * 0.28,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
+                  child: Container(
+                    width: width * 0.45,
+                    child: Card(
+                      elevation: 0.2,
+                      color: ColorsManager.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(width * 0.02),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: AspectRatio(
+                                aspectRatio: 0.7,
+                                child: Image.network(
+                                  book.cover,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                          ),
-                          SizedBox(height: height * 0.008),
-                          Text(
-                            book.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: width * 0.035,
+                            SizedBox(height: height * 0.008),
+                            Flexible(
+                              child: Text(
+                                book.title,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width * 0.035,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: height * 0.005),
-                          Text(
-                            book.releaseDate ?? "Unknown",
-                            style: TextStyle(
-                              fontSize: width * 0.03,
-                              color: ColorsManager.grey,
+                            SizedBox(height: height * 0.005),
+                            Text(
+                              book.releaseDate ?? "Unknown",
+                              style: TextStyle(
+                                fontSize: width * 0.03,
+                                color: ColorsManager.grey,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

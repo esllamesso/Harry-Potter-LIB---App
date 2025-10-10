@@ -49,7 +49,6 @@ class SearchScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    // 🔍 Search Bar
                     Container(
                       decoration: BoxDecoration(
                         color: ColorsManager.white,
@@ -81,7 +80,6 @@ class SearchScreen extends StatelessWidget {
 
                     SizedBox(height: height * 0.02),
 
-                    // 📚 Search Results
                     Expanded(
                       child: BlocBuilder<SearchBloc, SearchState>(
                         builder: (context, state) {
