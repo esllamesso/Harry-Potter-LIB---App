@@ -5,6 +5,8 @@ import 'package:book_app/logic/random_book/random_book_event.dart';
 import 'package:book_app/logic/top_books/top_books_bloc.dart';
 import 'package:book_app/logic/top_books/top_books_event.dart';
 import 'package:book_app/presentation/screens/fav_page.dart';
+import 'package:book_app/presentation/screens/search_screen.dart';
+import 'package:book_app/presentation/screens/all_books_screen.dart';
 import 'package:book_app/presentation/widgets/shared/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:book_app/core/utils/colors_manager.dart';
@@ -21,10 +23,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   int currentIndex = 0;
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -43,32 +42,11 @@ class _HomePageState extends State<HomePage> {
           create: (context) => RandomBookBloc()..add(FetchRandomBook()),
         ),
       ],
-      child: Scaffold(
-        backgroundColor: ColorsManager.white,
-        appBar: AppBar(
-          backgroundColor: ColorsManager.white,
-          elevation: 0,
-          title: Text(
-            "Harry Potter Library!",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: width * 0.05,
-              color: ColorsManager.black,
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.search_sharp,
-                size: width * 0.07,
-                color: ColorsManager.black,
-              ),
-            ),
-          ],
-        ),
-        body: currentIndex == 0
-            ? Padding(
+      child: Builder(
+        builder: (context) {
+          // هنا استخدمنا Builder عشان يكون context داخل الـ MultiBlocProvider
+          final pages = [
+            Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: width * 0.03,
                 vertical: height * 0.01,
@@ -90,15 +68,21 @@ class _HomePageState extends State<HomePage> {
                             color: ColorsManager.black,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Text(
-                            "See more",
-                            style: TextStyle(
-                              fontSize: width * 0.038,
-                              fontWeight: FontWeight.w400,
-                              color: ColorsManager.black.withOpacity(0.6),
-                            ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<AllBooksBloc>(),
+                                  child: const AllBooksScreen(),
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'See More',
+                            style: TextStyle(color: ColorsManager.black),
                           ),
                         ),
                       ],
@@ -119,15 +103,55 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-            )
-            : FavPage(),
+            ),
+            const FavPage(showAppBar: false),
+            const SearchScreen(showAppBar: false),
+          ];
 
-        extendBody: true,
-        bottomNavigationBar: SimpleNavBar(
-          currentIndex: currentIndex,
-          onTap: (i) => setState(() => currentIndex = i),
-        ),
+          return Scaffold(
+            backgroundColor: ColorsManager.white,
+            appBar: currentIndex == 2
+                ? null
+                : AppBar(
+              backgroundColor: ColorsManager.white,
+              elevation: 0,
+              title: Text(
+                "Harry Potter Library!",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: width * 0.05,
+                  color: ColorsManager.black,
+                ),
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                        const SearchScreen(showAppBar: true),
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.search_sharp,
+                    size: width * 0.07,
+                    color: ColorsManager.black,
+                  ),
+                ),
+              ],
+            ),
+            body: pages[currentIndex],
+            extendBody: true,
+            bottomNavigationBar: SimpleNavBar(
+              currentIndex: currentIndex,
+              onTap: (i) => setState(() => currentIndex = i),
+            ),
+          );
+        },
       ),
     );
   }
 }
+

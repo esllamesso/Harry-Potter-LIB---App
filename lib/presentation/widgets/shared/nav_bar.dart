@@ -6,10 +6,10 @@ class SimpleNavBar extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   const SimpleNavBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   Widget _buildItem({
     required BuildContext context,
@@ -29,7 +29,7 @@ class SimpleNavBar extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 4), // 👈 دي اللي بتنزل الأيقونة شوية لتحت
+              const SizedBox(height: 4),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: EdgeInsets.symmetric(
@@ -46,8 +46,7 @@ class SimpleNavBar extends StatelessWidget {
                   color: isSelected ? ColorsManager.black : ColorsManager.white,
                 ),
               ),
-
-              const SizedBox(height: 4), // المسافة بين الأيقونة والاسم
+              const SizedBox(height: 4),
               Text(
                 label,
                 style: TextStyle(
@@ -64,7 +63,6 @@ class SimpleNavBar extends StatelessWidget {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -93,13 +91,27 @@ class SimpleNavBar extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 6),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center, // ✅ وسط العناصر أفقيًا
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _buildItem(
-                    context: context, icon: Icons.home_filled, label: 'Home', index: 0),
+                  context: context,
+                  icon: Icons.home_filled,
+                  label: 'Home',
+                  index: 0,
+                ),
                 _buildItem(
-                    context: context, icon: Icons.favorite, label: 'Favorite', index: 1),
+                  context: context,
+                  icon: Icons.search,
+                  label: 'Search',
+                  index: 2,
+                ),
+                _buildItem(
+                  context: context,
+                  icon: Icons.favorite,
+                  label: 'Favorite',
+                  index: 1,
+                ),
               ],
             ),
           ),

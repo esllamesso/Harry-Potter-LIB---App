@@ -1,8 +1,10 @@
 import 'package:book_app/core/utils/colors_manager.dart';
+import 'package:book_app/core/utils/favorite_manager.dart';
 import 'package:flutter/material.dart';
 
 class FavPage extends StatefulWidget {
-  const FavPage({super.key});
+  final bool showAppBar;
+  const FavPage({super.key, this.showAppBar = true});
 
   @override
   State<FavPage> createState() => _FavPageState();
@@ -11,34 +13,41 @@ class FavPage extends StatefulWidget {
 class _FavPageState extends State<FavPage> {
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    final favorites = FavoriteManager.favorites;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: ColorsManager.white,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          "Favourite",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: width * 0.05,
-            color: ColorsManager.black,
-          ),
-        ),
-        leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_rounded)),
-      ),
       backgroundColor: ColorsManager.white,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Text(
-              textAlign: TextAlign.center,
-              "Your favorite book will appear here, but the page has not been loaded yet.",
+      appBar: widget.showAppBar
+          ? AppBar(
+        title: const Text("Favourites"),
+        centerTitle: true,
+        backgroundColor: ColorsManager.white,
+      )
+          : null,
+      body: favorites.isEmpty
+          ? const Center(child: Text("No favourites added yet"))
+          : ListView.builder(
+        itemCount: favorites.length,
+        itemBuilder: (context, index) {
+          final book = favorites[index];
+          return ListTile(
+            leading: Image.network(
+              book['cover'],
+              width: 50,
+              fit: BoxFit.cover,
             ),
-          ),
-        ],
+            title: Text(book['title']),
+            subtitle: Text(book['releaseDate']),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () {
+                setState(() {
+                  FavoriteManager.toggleFavorite(book);
+                });
+              },
+            ),
+          );
+        },
       ),
     );
   }

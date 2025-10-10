@@ -15,57 +15,71 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorsManager.white,
-      body: Column(
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
             children: [
-              Image.asset(
-                "assets/images/books.png",
-                fit: BoxFit.cover,
-                width: double.infinity,
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Image.asset(
+                    "assets/images/books.png",
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
+                  Positioned(
+                    left: 140,
+                    bottom: -25,
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                      width: 136,
+                      height: 136,
+                    ),
+                  ),
+                ],
               ),
-              Positioned(
-                left: 140,
-                bottom: -25,
-                child: Image.asset(
-                  "assets/images/logo.png",
-                  width: 136,
-                  height: 136,
+              const SizedBox(height: 60),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Center(
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    "Step into the magical world of Harry Potter at Hogwarts. "
+                        "Explore spells, adventures, and mysteries from anywhere, "
+                        "and discover your favorite wizarding tales. Enjoy your journey!",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                    ),
+                  ),
                 ),
               ),
+              const SizedBox(height: 40),
+              ButtonWidget(
+                width: 350,
+                text: "Get Started",
+                color: ColorsManager.white,
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              InkWell(
+                onTap: () {},
+                child: const Text(
+                  "Register",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+              ),
+              const SizedBox(height: 40),
             ],
           ),
-          SizedBox(height: 60),
-          Center(
-            child: Text(
-              textAlign: TextAlign.center,
-              "Step into the magical world of Harry Potter at Hogwarts. "
-                  "Explore spells, adventures, and mysteries from anywhere, "
-                  "and discover your favorite wizarding tales. Enjoy your journey!"
-              ,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          ),
-          ButtonWidget(
-            width: 350,
-            text: "Get Started",
-            color: ColorsManager.white,
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-            },
-          ),
-          InkWell(
-            onTap: () {},
-            child: Text(
-              "Register",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:book_app/core/utils/colors_manager.dart';
+import 'package:book_app/core/utils/favorite_manager.dart';
 import 'package:book_app/presentation/screens/fav_page.dart';
 import 'package:book_app/presentation/widgets/shared/button_widget.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,28 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  bool isSelected = false;
+  bool isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isFavorite = FavoriteManager.isFavorite(widget.title);
+  }
+
+  void _toggleFavorite() {
+    setState(() {
+      final book = {
+        "title": widget.title,
+        "originalTitle": widget.originalTitle,
+        "releaseDate": widget.releaseDate,
+        "pages": widget.pages,
+        "description": widget.description,
+        "cover": widget.cover,
+      };
+      FavoriteManager.toggleFavorite(book);
+      isFavorite = FavoriteManager.isFavorite(widget.title);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,27 +59,21 @@ class _DetailsPageState extends State<DetailsPage> {
       backgroundColor: ColorsManager.white,
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Book", style: TextStyle(fontWeight: FontWeight.w400)),
+        title: const Text("Book", style: TextStyle(fontWeight: FontWeight.w400)),
         backgroundColor: ColorsManager.white,
         elevation: 0,
         actions: [
           IconButton(
-            onPressed: () {
-              setState(() {
-                isSelected = !isSelected;
-              });
-            },
+            onPressed: _toggleFavorite,
             icon: Icon(
-              isSelected ? Icons.favorite : Icons.favorite_border,
-              color: isSelected ? Colors.red : Colors.black,
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : Colors.black,
             ),
           ),
         ],
         leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back_outlined),
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_outlined),
         ),
       ),
       body: Padding(
@@ -79,114 +95,84 @@ class _DetailsPageState extends State<DetailsPage> {
               ),
               SizedBox(height: height * 0.01),
               Card(
-                elevation: 0,
+                elevation: 0.2,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 color: Colors.white,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: height * 0.04,
-                    horizontal: height * 0,
-                  ),
+                  padding: EdgeInsets.all(width * 0.02),
                   child: Row(
                     children: [
-                      SizedBox(
-                        width: width * 0.4,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            widget.cover,
-                            height: height * 0.3,
-                            fit: BoxFit.cover,
-                          ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          widget.cover,
+                          height: height * 0.25,
+                          width: width * 0.35,
+                          fit: BoxFit.cover,
                         ),
                       ),
+                      SizedBox(width: width * 0.04),
                       Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: width * 0.03),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Original Title : ${widget.originalTitle}",
-                                style: TextStyle(
-                                  color: ColorsManager.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: width * 0.03,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Original Title : ${widget.originalTitle}",
+                              style: TextStyle(
+                                fontSize: width * 0.032,
+                                color: ColorsManager.black,
+                                fontWeight: FontWeight.w500,
                               ),
-                              SizedBox(height: height * 0.01),
-
-                              Text(
-                                "Release Date : ${widget.releaseDate}",
-                                style: TextStyle(
-                                  color: ColorsManager.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: width * 0.03,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: height * 0.01),
+                            Text(
+                              "Release Date : ${widget.releaseDate}",
+                              style: TextStyle(
+                                fontSize: width * 0.032,
+                                color: ColorsManager.black,
                               ),
-                              SizedBox(height: height * 0.01),
-                              Text(
-                                "Pages : ${widget.pages}",
-                                style: TextStyle(
-                                  fontSize: width * 0.03,
-                                  fontWeight: FontWeight.w500,
-                                  color: ColorsManager.black,
-                                ),
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: height * 0.01),
+                            Text(
+                              "Pages : ${widget.pages}",
+                              style: TextStyle(
+                                fontSize: width * 0.032,
+                                color: ColorsManager.black,
                               ),
-
-                              SizedBox(height: height * 0.03),
-
-                              ButtonWidget(
-                                height: height * 0.05,
-                                width: double.infinity,
-                                text: "Add To Favourite",
-                                color: ColorsManager.white,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => FavPage(),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: height * 0.03),
+                            ButtonWidget(
+                              height: height * 0.05,
+                              width: double.infinity,
+                              text: isFavorite
+                                  ? "Remove from Favourite"
+                                  : "Add To Favourite",
+                              color: ColorsManager.white,
+                              onTap: _toggleFavorite,
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-
-              SizedBox(height: height * 0.01),
-
-              Text(
+              SizedBox(height: height * 0.02),
+              const Text(
                 "Description:",
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: ColorsManager.black,
                 ),
               ),
-
-              SizedBox(height: height * 0.02),
-
+              SizedBox(height: height * 0.01),
               Text(
                 widget.description,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: ColorsManager.black,
                 ),
               ),
             ],
