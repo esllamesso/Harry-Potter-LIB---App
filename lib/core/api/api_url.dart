@@ -1,8 +1,11 @@
 class ApiUrl {
+  static const String baseUrl = "https://potterapi-fedeperin.vercel.app/en";
 
-  static const String baseUrl = "https://potterapi-fedeperin.vercel.app/en/books";
+  static const String allBooks = "$baseUrl/books";
 
-  static const String allBooks = baseUrl;
+  static const String characters = "$baseUrl/characters";
+
+  static const String houses = "$baseUrl/houses";
 
   static String bookByIndex(int index) => "$baseUrl?index=$index";
 
@@ -10,6 +13,5 @@ class ApiUrl {
 
   static String searchBook(String query) => "$baseUrl?search=$query";
 
-  static const String randomBook = "$baseUrl/random";
-  }
-
+  static const String randomBook = "$baseUrl/books/random";
+}

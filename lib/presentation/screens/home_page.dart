@@ -1,19 +1,21 @@
 import 'package:book_app/logic/all_books/all_books_bloc.dart';
 import 'package:book_app/logic/all_books/all_books_event.dart';
+import 'package:book_app/logic/characters/characters_bloc.dart';
+import 'package:book_app/logic/characters/characters_event.dart';
 import 'package:book_app/logic/random_book/random_book_bloc.dart';
 import 'package:book_app/logic/random_book/random_book_event.dart';
 import 'package:book_app/logic/top_books/top_books_bloc.dart';
 import 'package:book_app/logic/top_books/top_books_event.dart';
 import 'package:book_app/presentation/screens/fav_page.dart';
 import 'package:book_app/presentation/screens/search_screen.dart';
-import 'package:book_app/presentation/screens/all_books_screen.dart';
 import 'package:book_app/presentation/widgets/shared/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:book_app/core/utils/colors_manager.dart';
-import 'package:book_app/presentation/widgets/book_sections/all_books.dart';
-import 'package:book_app/presentation/widgets/book_sections/random_book.dart';
-import 'package:book_app/presentation/widgets/book_sections/top_books.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../widgets/category_tabs.dart';
+import '../widgets/dynamic_list.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,6 +26,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
+  int selectedCategory = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,11 @@ class _HomePageState extends State<HomePage> {
 
     return MultiBlocProvider(
       providers: [
+
+        BlocProvider(
+          create: (context) => CharactersBloc()..add(FetchCharactersEvent()),
+        ),
+
         BlocProvider(
           create: (context) => AllBooksBloc()..add(FetchAllBooksEvent()),
         ),
@@ -45,60 +53,55 @@ class _HomePageState extends State<HomePage> {
       child: Builder(
         builder: (context) {
           final pages = [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: width * 0.03,
-                vertical: height * 0.01,
-              ),
-              child: SingleChildScrollView(
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 15,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    RandomBook(),
-                    SizedBox(height: height * 0.03),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "All Books",
-                          style: TextStyle(
-                            fontSize: width * 0.05,
-                            fontWeight: FontWeight.w600,
-                            color: ColorsManager.black,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => BlocProvider.value(
-                                  value: context.read<AllBooksBloc>(),
-                                  child: const AllBooksScreen(),
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'See More',
-                            style: TextStyle(color: ColorsManager.black),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: height * 0.02),
-                    BooksList(),
-                    SizedBox(height: height * 0.03),
+
+                    const SizedBox(height: 10),
+
                     Text(
-                      "Top 3 Books",
+                      "Harry Potter",
                       style: TextStyle(
-                        fontSize: width * 0.05,
-                        fontWeight: FontWeight.w600,
-                        color: ColorsManager.black,
+                        fontSize: width * .08,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: height * 0.02),
-                    TopBooks(),
+
+                    const SizedBox(height: 5),
+
+                    Text(
+                      "Discover your favourite books",
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: width * .04,
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    CategoryTabs(
+                      selectedIndex: selectedCategory,
+                      onChanged: (index) {
+                        setState(() {
+                          selectedCategory = index;
+                        });
+                      },
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    Expanded(
+                      child: DynamicList(
+                        selectedIndex: selectedCategory,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -108,37 +111,39 @@ class _HomePageState extends State<HomePage> {
           ];
 
           return Scaffold(
-            backgroundColor: ColorsManager.white,
+            backgroundColor: Colors.white,
+
             appBar: currentIndex == 2
                 ? null
                 : AppBar(
-              backgroundColor: ColorsManager.white,
+              backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
               elevation: 0,
-              title: Text(
-                "Harry Potter Library!",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: width * 0.05,
-                  color: ColorsManager.black,
-                ),
+              title: const Text(
+                "Library",
               ),
+              centerTitle: false,
               actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                        const SearchScreen(showAppBar: true),
-                      ),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.search_sharp,
-                    size: width * 0.07,
-                    color: ColorsManager.black,
+
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey.shade100,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                            const SearchScreen(showAppBar: true),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.search),
+                    ),
                   ),
                 ),
+
               ],
             ),
             body: pages[currentIndex],

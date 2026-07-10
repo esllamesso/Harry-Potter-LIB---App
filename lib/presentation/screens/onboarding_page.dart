@@ -29,7 +29,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     width: double.infinity,
                   ),
                   Positioned(
-                    left: 140,
+                    left: 160,
                     bottom: -25,
                     child: Image.asset(
                       "assets/images/logo.png",
@@ -46,8 +46,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   child: Text(
                     textAlign: TextAlign.center,
                     "Step into the magical world of Harry Potter at Hogwarts. "
-                        "Explore spells, adventures, and mysteries from anywhere, "
-                        "and discover your favorite wizarding tales. Enjoy your journey!",
+                    "Explore spells, adventures, and mysteries from anywhere, "
+                    "and discover your favorite wizarding tales. Enjoy your journey!",
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
