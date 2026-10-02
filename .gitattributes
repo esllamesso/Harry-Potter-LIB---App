@@ -1,0 +1,8 @@
+# Generated platform folders: excluded from GitHub's language statistics,
+# so the repository is shown as a Dart project instead of C++/HTML.
+android/** linguist-vendored
+ios/** linguist-vendored
+linux/** linguist-vendored
+macos/** linguist-vendored
+windows/** linguist-vendored
+web/** linguist-vendored
